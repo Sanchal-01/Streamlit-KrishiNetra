@@ -1,73 +1,28 @@
 import streamlit as st
 import tensorflow as tf
 import numpy as np
+from PIL import Image
 
-#Tensorflow Model Prediction
-def model_prediction(test_image):
-    model  = tf.keras.models.load_model('trained_model.keras')
-    image = tf.keras.preprocessing.image.load_img(test_image,target_size=(128, 128))
-    input_arr = tf.keras.preprocessing.image.img_to_array(image)
-    input_arr = np.array([input_arr]) #Convert single image to a batch
-    prediction = model.predict(input_arr)
-    result_index = np.argmax(prediction)
-    return result_index
+# Page Configuration
+st.set_page_config(
+    page_title="Plant Disease Recognition",
+    page_icon="🌿",
+    layout="centered"
+)
 
-#Sidebar
-st.sidebar.title("Dashboard")
-app_mode = st.sidebar.selectbox("Select Page",["Home","About","Disease Recognition"])
+# Load Model (Cached - loads only once)
 
-#Home Page
-if(app_mode=="Home"):
-    st.header("PLANT DISEASE RECOGNITION SYSTEM")
-    image_path = "home_page.jpeg"
-    st.image(image_path,use_column_width=True)
-    st.markdown("""
-    Welcome to the Plant Disease Recognition System! 🌿🔍
-    
-    Our mission is to help in identifying plant diseases efficiently. Upload an image of a plant, and our system will analyze it to detect any signs of diseases. Together, let's protect our crops and ensure a healthier harvest!
+@st.cache_resource
+def load_model():
+    return tf.keras.models.load_model("trained_model.keras")
 
-    ### How It Works
-    1. **Upload Image:** Go to the **Disease Recognition** page and upload an image of a plant with suspected diseases.
-    2. **Analysis:** Our system will process the image using advanced algorithms to identify potential diseases.
-    3. **Results:** View the results and recommendations for further action.
+model = load_model()
 
-    ### Why Choose Us?
-    - **Accuracy:** Our system utilizes state-of-the-art machine learning techniques for accurate disease detection.
-    - **User-Friendly:** Simple and intuitive interface for seamless user experience.
-    - **Fast and Efficient:** Receive results in seconds, allowing for quick decision-making.
 
-    ### Get Started
-    Click on the **Disease Recognition** page in the sidebar to upload an image and experience the power of our Plant Disease Recognition System!
+# Class Names
 
-    ### About Us
-    Learn more about the project, our team, and our goals on the **About** page.
-""")
-
-#About Page
-elif(app_mode=="About"):
-    st.header("About")
-    st.markdown("""
-    #### About Dataset
-    This dataset is recreated using offline augmentation from the original dataset. The original dataset can be found on this github repo. This dataset consists of about 87K rgb images of healthy and diseased crop leaves which is categorized into 38 different classes. The total dataset is divided into 80/20 ratio of training and validation set preserving the directory structure. A new directory containing 33 test images is created later for prediction purpose.
-    #### Content
-    1. Train (70295 images)
-    2. Valid (17572 image)
-    3. Test (33 images)
-""")
-    
-#Prediction Page
-elif(app_mode=="Disease Recognition"):
-    st.header("Disease Recognition")
-    test_image = st.file_uploader("Choose an Image:")
-    if(st.button("Show Image")):
-        st.image(test_image,use_column_width=True)
-    #Predict Button
-    if(st.button("Predict")):
-        with st.spinner("Please Wait.."):
-            st.write("Our Prediction")
-            result_index = model_prediction(test_image)
-            #Define Class
-            class_name = ['Apple___Apple_scab',
+CLASS_NAMES = [
+    'Apple___Apple_scab',
     'Apple___Black_rot',
     'Apple___Cedar_apple_rust',
     'Apple___healthy',
@@ -104,5 +59,108 @@ elif(app_mode=="Disease Recognition"):
     'Tomato___Target_Spot',
     'Tomato___Tomato_Yellow_Leaf_Curl_Virus',
     'Tomato___Tomato_mosaic_virus',
-    'Tomato___healthy']
-        st.success("Model is Predicting it's a {}".format(class_name[result_index]))
+    'Tomato___healthy'
+]
+
+
+# Prediction Function
+
+def model_prediction(image):
+    # Ensure RGB image (important safety fix)
+    if image.mode != "RGB":
+        image = image.convert("RGB")
+
+    # Resize & preprocess
+    image = image.resize((128, 128))
+    image = np.array(image) / 255.0
+    image = np.expand_dims(image, axis=0)
+
+    # Predict
+    predictions = model.predict(image)
+    predicted_index = np.argmax(predictions)
+    confidence = np.max(predictions) * 100
+
+    return predicted_index, confidence
+
+# Sidebar
+
+st.sidebar.title("🌿 Dashboard")
+app_mode = st.sidebar.selectbox(
+    "Select Page",
+    ["Home", "About", "Disease Recognition"]
+)
+
+
+# Home Page
+
+if app_mode == "Home":
+    st.header("🌱 PLANT DISEASE RECOGNITION SYSTEM")
+
+    st.markdown("""
+    Welcome to the **Plant Disease Recognition System** 🌿  
+
+    This application uses a **deep learning model (TensorFlow)** to identify
+    plant diseases from leaf images.
+
+    ### 🔍 How It Works
+    1. Upload an image of a plant leaf  
+    2. Model analyzes the image  
+    3. Disease is predicted with confidence score  
+
+    ### ✅ Features
+    - Deep Learning based detection
+    - Fast & accurate predictions
+    - Simple and user-friendly interface
+
+    👉 Navigate to **Disease Recognition** to get started.
+    """)
+
+
+# About Page
+
+elif app_mode == "About":
+    st.header("📘 About")
+
+    st.markdown("""
+    ### Dataset Information
+    - Dataset derived from **PlantVillage**
+    - ~87,000 RGB images
+    - 38 plant disease & healthy classes
+    - Train / Validation split: 80% / 20%
+
+    ### Technologies Used
+    - TensorFlow & Keras
+    - Streamlit
+    - NumPy
+    - Python
+
+    This project is developed for **learning, research, and real-world applications**.
+    """)
+
+
+# Disease Recognition Page
+
+elif app_mode == "Disease Recognition":
+    st.header("🔬 Disease Recognition")
+
+    uploaded_file = st.file_uploader(
+        "Upload a plant leaf image",
+        type=["jpg", "jpeg", "png"]
+    )
+
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        st.image(image, caption="Uploaded Image", use_column_width=True)
+
+        if st.button("🔍 Predict"):
+            with st.spinner("Analyzing image..."):
+                try:
+                    index, confidence = model_prediction(image)
+                    st.success(
+                        f"Prediction: **{CLASS_NAMES[index]}**\n\n"
+                        f"Confidence: **{confidence:.2f}%**"
+                    )
+                except Exception:
+                    st.error("Error during prediction. Please try another image.")
+    else:
+        st.info("Please upload an image to start prediction.")
