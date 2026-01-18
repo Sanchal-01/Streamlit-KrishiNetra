@@ -120,4 +120,7 @@ It should not be used as a replacement for professional agricultural or medical 
 **Sanchal Kumar**  
 (Data Analytics / Machine Learning – Hackathon Project)
 
+## 📺 A frontend walkthrough demo is available in the frontend-demo folder.
+
+
 
