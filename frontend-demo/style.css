@@ -1,0 +1,106 @@
+/* Custom styles for Krishi Netra */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    scroll-behavior: smooth;
+    background: #0e0d0d;
+}
+
+.hero-section {
+    background: linear-gradient(rgb(191, 219, 197), rgba(255, 255, 255, 0.7)), 
+                url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    background-size: cover;
+    background-position: center;
+}
+.rounded-div {
+  background: #fdfdfd; /* or your existing background */
+  border-radius: 20px; /* keep it rounded */
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(133, 155, 137, 0.917); /* initial depth */
+  transition: all 0.3s ease; /* smooth animation */
+}
+
+/* .rounded-div:hover {
+  transform: translateY(-6px) scale(1.02); lift + slight zoom */
+  /* box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25); deeper shadow */
+.rounded-div:hover{
+  transform: scale(1.03);
+}
+
+#upload-container {
+    transition: all 0.3s ease;
+}
+
+#upload-container:hover {
+    border-color: #d7f517;
+    transform: translateY(-3px);
+}
+
+#analyze-btn, .nav-link {
+    transition: all 0.3s ease;
+}
+
+#analyze-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.nav-link:hover {
+    transform: translateY(-2px);
+}
+
+/* Animation for results */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#result-container {
+    animation: fadeIn 0.5s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 80px 0;
+    }
+}
+
+img {
+  margin-right: 20px; /* space to the right of each image */
+}
+.about-box {
+  
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  padding: 2rem;
+  border-radius: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.about-box::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(1, 84, 15, 0.665); /* dark overlay for readability */
+  z-index: -1;
+}
+
+.about-box:hover {
+  transform: scale(1.03);
+}
+
+/* Unique background images for each box */
+.box1 {
+  background-image: url('https://media.licdn.com/dms/image/v2/D4D12AQEEXyXR8gv82w/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1716460961236?e=2147483647&v=beta&t=5O9hdfyOEYFxaf8XjCnR1wuK-0g7LxwrNDfTjiqg9CU');
+max-width:1000px;max-height:  500px;}
+
+.box2 {
+  background-image: url('https://eos.com/wp-content/uploads/2022/05/hot-pepper-leaves.jpg.webp');
+}
+
+.box3 {
+  background-image: url('https://biosafesystems.com/wp-content/uploads/2025/02/irrigation-1.jpg');
+}
