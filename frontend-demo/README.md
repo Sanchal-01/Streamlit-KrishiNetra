@@ -43,7 +43,7 @@ The frontend dynamically loads UI content from `lang.json` using JavaScript.
 ## 🎥 Demo Video
 
 📺 **YouTube Walkthrough:**  
-👉 https://www.youtube.com/watch?v=YOUR_VIDEO_LINK_HERE
+👉 https://youtu.be/P33oDqEfw-A?si=5b_Hntsu2csNs2vx
 
 The video explains:
 - Overall application flow
